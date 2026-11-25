@@ -1,2 +1,9 @@
-# Castix Mini App Web
-Static GitHub Pages frontend. Set CASTIX_API in config.js to the deployed Apps Script /exec endpoint (not the bot token). Upload files to repository root, enable Pages from main/root, then configure the HTTPS Pages URL as the bot menu button in BotFather. Open from Telegram for signed authentication. The browser must be able to follow Apps Script redirects and read its response; verify on the actual Telegram client. Local preview without Telegram cannot access private API. No live integration test performed. Image previews and automated CAS scanning are not implemented.
+# Castix AMOLED Community
+
+Official web frontend: https://castix.siwane.xyz/
+
+Browse public information in a browser; open @Castix_bot for authenticated theme browsing, submissions and downloads.
+
+Deploy repository root through GitHub Pages with the supplied CNAME. Keep config.js API endpoints unchanged. The ads.txt publisher declaration and AdSense account metadata are included; no ad scripts are loaded. Advertising requires site approval, supported browser inventory, appropriate consent controls and a hosting policy review. The root domain siwane.xyz must also serve the publisher declaration if required by AdSense.
+
+Privacy requests are handled manually through community moderators.

@@ -52,3 +52,7 @@ article p[dir],body[data-mode=mine] .mine-card p[dir],#manage-content p[dir]{dir
 .public-ad-slot .adsbygoogle{min-width:0;width:100%}
 
 @media (prefers-reduced-motion:reduce){.castix-loader-mark:before{animation:none}}
+
+/* Touch navigation: no lingering pressed transforms or translucent loader. */
+@media (hover:none) and (pointer:coarse){button:active,button:active .ui-icon{transform:none}button,.ui-icon{transition:none}.community-links a:active,.legal-sheet-list a:active{opacity:1}}
+body.castix-loading{overflow:hidden}body.castix-loading button,body.castix-loading .ui-icon{transition:none!important;transform:none!important}body.castix-loading nav{backdrop-filter:none;-webkit-backdrop-filter:none}body.castix-loading nav button{opacity:1} .castix-loader{isolation:isolate;z-index:2147483647;background:linear-gradient(var(--bg),var(--bg)),Canvas;touch-action:none;overscroll-behavior:contain}

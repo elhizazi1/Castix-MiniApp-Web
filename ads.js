@@ -16,7 +16,6 @@
     if (!config.enabled || requested || !supportedBrowser() ||
         !Number.isInteger(publicThemeCount) || publicThemeCount < config.minThemes ||
         !(container instanceof HTMLElement) || !container.isConnected) return false;
-    container.hidden = false;
     container.dataset.adState = 'pending';
     requested = true;
     const ad = document.createElement('ins');
@@ -38,7 +37,7 @@
     script.async = true;
     script.crossOrigin = 'anonymous';
     script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + config.client;
-    script.onload = () => { try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch { observer.disconnect(); container.dataset.adState = 'error'; container.hidden = true; } };
+    script.onload = () => { try { container.hidden = false; (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch { observer.disconnect(); container.dataset.adState = 'error'; container.hidden = true; } };
     script.onerror = () => { observer.disconnect(); container.dataset.adState = 'error'; container.hidden = true; };
     document.head.append(script);
     return true;

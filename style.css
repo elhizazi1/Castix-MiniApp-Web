@@ -56,3 +56,14 @@ article p[dir],body[data-mode=mine] .mine-card p[dir],#manage-content p[dir]{dir
 /* Touch navigation: no lingering pressed transforms or translucent loader. */
 @media (hover:none) and (pointer:coarse){button:active,button:active .ui-icon{transform:none}button,.ui-icon{transition:none}.community-links a:active,.legal-sheet-list a:active{opacity:1}}
 body.castix-loading{overflow:hidden}body.castix-loading button,body.castix-loading .ui-icon{transition:none!important;transform:none!important}body.castix-loading nav{backdrop-filter:none;-webkit-backdrop-filter:none}body.castix-loading nav button{opacity:1} .castix-loader{isolation:isolate;z-index:2147483647;background:linear-gradient(var(--bg),var(--bg)),Canvas;touch-action:none;overscroll-behavior:contain}
+
+/* Atomic loading surface: preserve layout, suppress underlying paint and press feedback. */
+button,button .ui-icon,nav button,.community-links a,.legal-sheet-list a{transition:none!important;-webkit-tap-highlight-color:transparent;}
+button:active,button:active .ui-icon{transform:none!important;}
+.community-links a:active,.legal-sheet-list a:active{opacity:1!important;}
+body.castix-loading{overflow:visible;}
+body.castix-loading > :not(.castix-loader):not(script):not(style){visibility:hidden!important;pointer-events:none!important;}
+body.castix-loading dialog::backdrop{visibility:hidden!important;backdrop-filter:none!important;}
+body.castix-loading nav{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}
+.castix-loader{background:var(--bg);opacity:1;transition:none!important;}
+.castix-loader[hidden]{display:none!important;}

@@ -1,11 +1,11 @@
 /* Castix display inventory. Disabled until public inventory and consent are ready. */
 (() => {
   'use strict';
-  const config = Object.freeze({ enabled: false, client: 'ca-pub-8266760443476569', slot: '6838366232' });
+  const config = Object.freeze({ enabled: false, minThemes: 5, client: 'ca-pub-8266760443476569', slot: '6838366232' });
   let requested = false;
   function supportedBrowser() {
     const tg = window.Telegram?.WebApp;
-    const params = new URLSearchParams(location.search + '&' + location.hash.slice(1));
+    const params = new URLSearchParams(location.search.slice(1) + '&' + location.hash.slice(1));
     return location.protocol === 'https:' && location.hostname === 'castix.siwane.xyz' &&
       !tg?.initData && (!tg?.platform || tg.platform === 'unknown') &&
       !Array.from(params.keys()).some(key => /^tgWebApp/i.test(key)) &&
@@ -14,7 +14,7 @@
   // Call only from a future public catalog after a certified CMP permits an ad request.
   function mount(container, { publicThemeCount = 0, cmpAllowsRequest = false } = {}) {
     if (!config.enabled || requested || !supportedBrowser() || cmpAllowsRequest !== true ||
-        !Number.isInteger(publicThemeCount) || publicThemeCount < 1 ||
+        !Number.isInteger(publicThemeCount) || publicThemeCount < config.minThemes ||
         !(container instanceof HTMLElement) || !container.isConnected || !container.getClientRects().length) return false;
     requested = true;
     const ad = document.createElement('ins');
@@ -39,5 +39,12 @@
     document.head.append(script);
     return true;
   }
-  window.CastixAds = Object.freeze({ mount });
+  // Fail closed: a verified CMP integration must supply permission before mount.
+  // No Google script is loaded by this preparation build.
+  function prepare(container, count) {
+    if (!config.enabled || !supportedBrowser() || count < config.minThemes || requested) return false;
+    // Reserved for a verified CMP adapter; never infer consent from its presence.
+    return false;
+  }
+  window.CastixAds = Object.freeze({ mount, prepare });
 })();

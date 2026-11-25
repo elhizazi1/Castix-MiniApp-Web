@@ -7,6 +7,16 @@
   const name=document.createElement('strong'); name.textContent='Castix';
   const label=document.createElement('span');
   loader.append(mark,name,label); document.body.append(loader);
-  let timer;
-  window.CastixLoader=Object.freeze({show(){clearTimeout(timer);label.textContent=document.documentElement.lang==='ar'?'جارٍ تحميل التصاميم…':'Loading themes…';loader.hidden=false;timer=setTimeout(()=>{loader.hidden=true;},12000);},hide(){clearTimeout(timer);loader.hidden=true;}});
+  const active=new Set();
+  function begin(){
+    const token={}; active.add(token);
+    label.textContent=document.documentElement.lang==='ar'?'جارٍ التحميل…':'Loading…';
+    loader.hidden=false;
+    const timer=setTimeout(end,12000);
+    function end(){clearTimeout(timer);active.delete(token);loader.hidden=!active.size;}
+    return end;
+  }
+  const legacy=[];
+  async function during(fn){const end=begin();try{await new Promise(resolve=>{const timer=setTimeout(resolve,100);requestAnimationFrame(()=>requestAnimationFrame(()=>{clearTimeout(timer);resolve();}));});return await fn();}finally{end();}}
+  window.CastixLoader=Object.freeze({during,show(){legacy.push(begin());},hide(){legacy.shift()?.();}});
 })();

@@ -1,0 +1,1 @@
+(()=>{const b=document.getElementById('lang');let l='en';try{l=localStorage.getItem('castix-lang')==='ar'?'ar':'en'}catch{}function apply(){document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';b.textContent=l==='ar'?'English':'العربية'}b.onclick=()=>{l=l==='ar'?'en':'ar';try{localStorage.setItem('castix-lang',l)}catch{}apply()};apply()})();

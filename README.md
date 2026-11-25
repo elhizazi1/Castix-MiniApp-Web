@@ -1,2 +1,2 @@
-# Castix-MiniApp-Web
-Official Castix community theme marketplace for Telegram.
+# Castix Mini App Web
+Static GitHub Pages frontend. Set CASTIX_API in config.js to the deployed Apps Script /exec endpoint (not the bot token). Upload files to repository root, enable Pages from main/root, then configure the HTTPS Pages URL as the bot menu button in BotFather. Open from Telegram for signed authentication. The browser must be able to follow Apps Script redirects and read its response; verify on the actual Telegram client. Local preview without Telegram cannot access private API. No live integration test performed. Image previews and automated CAS scanning are not implemented.

@@ -1,7 +1,7 @@
-/* Castix display inventory. Disabled until public inventory and consent are ready. */
+/* Castix public display inventory; Google-managed consent messaging. */
 (() => {
   'use strict';
-  const config = Object.freeze({ enabled: false, minThemes: 5, client: 'ca-pub-8266760443476569', slot: '6838366232' });
+  const config = Object.freeze({ enabled: true, minThemes: 5, client: 'ca-pub-8266760443476569', slot: '6838366232' });
   let requested = false;
   function supportedBrowser() {
     const tg = window.Telegram?.WebApp;
@@ -11,11 +11,12 @@
       !Array.from(params.keys()).some(key => /^tgWebApp/i.test(key)) &&
       !/Telegram|WebView|; wv\)/i.test(navigator.userAgent);
   }
-  // Call only from a future public catalog after a certified CMP permits an ad request.
+  // Public inventory only; Google tag handles its own consent messaging.
   function mount(container, { publicThemeCount = 0, cmpAllowsRequest = false } = {}) {
-    if (!config.enabled || requested || !supportedBrowser() || cmpAllowsRequest !== true ||
+    if (!config.enabled || requested || !supportedBrowser() ||
         !Number.isInteger(publicThemeCount) || publicThemeCount < config.minThemes ||
-        !(container instanceof HTMLElement) || !container.isConnected || !container.getClientRects().length) return false;
+        !(container instanceof HTMLElement) || !container.isConnected) return false;
+    container.hidden = false;
     requested = true;
     const ad = document.createElement('ins');
     ad.className = 'adsbygoogle';
@@ -24,7 +25,9 @@
     ad.dataset.adSlot = config.slot;
     ad.dataset.adFormat = 'auto';
     ad.dataset.fullWidthResponsive = 'true';
-    container.append(ad);
+    const label = document.createElement("small");
+    label.textContent = document.documentElement.lang === "ar" ? "إعلانات" : "Advertisements";
+    container.append(label, ad);
     const observer = new MutationObserver(() => {
       if (ad.dataset.adStatus === 'unfilled') { observer.disconnect(); container.hidden = true; }
       else if (ad.dataset.adStatus === 'filled') observer.disconnect();
@@ -39,12 +42,11 @@
     document.head.append(script);
     return true;
   }
-  // Fail closed: a verified CMP integration must supply permission before mount.
-  // No Google script is loaded by this preparation build.
+  // Google AdSense tag integrates with the published Google Privacy & Messaging CMP.
+  // Do not fabricate consent or override Google consent signals.
   function prepare(container, count) {
     if (!config.enabled || !supportedBrowser() || count < config.minThemes || requested) return false;
-    // Reserved for a verified CMP adapter; never infer consent from its presence.
-    return false;
+    return mount(container, { publicThemeCount: count });
   }
   window.CastixAds = Object.freeze({ mount, prepare });
 })();

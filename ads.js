@@ -12,11 +12,12 @@
       !/Telegram|WebView|; wv\)/i.test(navigator.userAgent);
   }
   // Public inventory only; Google tag handles its own consent messaging.
-  function mount(container, { publicThemeCount = 0, cmpAllowsRequest = false } = {}) {
+  function mount(container, { publicThemeCount = 0 } = {}) {
     if (!config.enabled || requested || !supportedBrowser() ||
         !Number.isInteger(publicThemeCount) || publicThemeCount < config.minThemes ||
         !(container instanceof HTMLElement) || !container.isConnected) return false;
     container.hidden = false;
+    container.dataset.adState = 'pending';
     requested = true;
     const ad = document.createElement('ins');
     ad.className = 'adsbygoogle';
@@ -29,16 +30,16 @@
     label.textContent = document.documentElement.lang === "ar" ? "إعلانات" : "Advertisements";
     container.append(label, ad);
     const observer = new MutationObserver(() => {
-      if (ad.dataset.adStatus === 'unfilled') { observer.disconnect(); container.hidden = true; }
-      else if (ad.dataset.adStatus === 'filled') observer.disconnect();
+      if (ad.dataset.adStatus === 'unfilled') { observer.disconnect(); container.dataset.adState = 'unfilled'; container.hidden = true; }
+      else if (ad.dataset.adStatus === 'filled') { container.dataset.adState = 'filled'; observer.disconnect(); }
     });
     observer.observe(ad, { attributes: true, attributeFilter: ['data-ad-status'] });
     const script = document.createElement('script');
     script.async = true;
     script.crossOrigin = 'anonymous';
     script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + config.client;
-    script.onload = () => { try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch { observer.disconnect(); container.hidden = true; } };
-    script.onerror = () => { observer.disconnect(); container.hidden = true; };
+    script.onload = () => { try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch { observer.disconnect(); container.dataset.adState = 'error'; container.hidden = true; } };
+    script.onerror = () => { observer.disconnect(); container.dataset.adState = 'error'; container.hidden = true; };
     document.head.append(script);
     return true;
   }

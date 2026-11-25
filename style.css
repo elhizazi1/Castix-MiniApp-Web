@@ -48,5 +48,7 @@ html[dir=ltr] .theme-info h2[dir],html[dir=ltr] .mine-profile h2[dir]{text-align
 article p[dir],body[data-mode=mine] .mine-card p[dir],#manage-content p[dir]{direction:revert;unicode-bidi:plaintext;text-align:start}
 .theme-meta{direction:ltr;unicode-bidi:isolate}html[dir=rtl] .theme-meta{justify-content:flex-end}
 .castix-loader{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:var(--bg);color:var(--text)}
-.castix-loader-mark{width:94px;height:94px;position:relative;display:grid;place-items:center}.castix-loader-mark:before{content:'';position:absolute;inset:0;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .9s linear infinite}.castix-loader-mark img{width:70px;height:70px;border-radius:22px}.castix-loader strong{font-size:26px}.castix-loader span{color:var(--muted);font-size:13px}
+.castix-loader-mark{width:94px;height:94px;position:relative;display:grid;place-items:center}.castix-loader-mark:before{content:'';position:absolute;inset:0;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .9s linear infinite}.castix-loader-mark img{width:70px;height:70px;border-radius:50%;object-fit:cover}.castix-loader strong{font-size:26px}.castix-loader span{color:var(--muted);font-size:13px}
 .public-ad-slot .adsbygoogle{min-width:0;width:100%}
+
+@media (prefers-reduced-motion:reduce){.castix-loader-mark:before{animation:none}}

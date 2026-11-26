@@ -10,4 +10,4 @@ Privacy requests are handled manually through community moderators.
 
 ## Advertising
 
-Castix does not load advertising scripts or request ads in browsers or Telegram Mini Apps.
+Castix integrates one AdsGram Task placement in the Telegram home catalog. Public browser pages do not request ads. Google advertising is disabled. No Castix reward balance or server callback is implemented.

@@ -10,4 +10,4 @@ Privacy requests are handled manually through community moderators.
 
 ## Advertising
 
-Castix integrates one AdsGram Task placement in the Telegram home catalog. Public browser pages do not request ads. Google advertising is disabled. No Castix reward balance or server callback is implemented.
+Advertising is disabled in this release. The optional AdsGram Task integration is retained but does not load its SDK or request ads while CASTIX_ADS_ENABLED is false in config.js. Enable only after approval and integration testing. Google advertising is disabled.

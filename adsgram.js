@@ -3,7 +3,7 @@ window.CastixAds = (() => {
   let sdk;
   function load(){return sdk ||= new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://sad.adsgram.ai/js/sad.min.js';s.onload=resolve;s.onerror=reject;document.head.append(s);}).then(()=>customElements.whenDefined('adsgram-task'));}
   function mount(root,tr){
-    if(!window.Telegram?.WebApp?.initData || root.querySelector('.castix-sponsored'))return;
+    if(window.CASTIX_ADS_ENABLED !== true || !window.Telegram?.WebApp?.initData || root.querySelector('.castix-sponsored'))return;
     const sections=root.querySelectorAll('.catalog-section');if(sections.length<2)return;
     const wrap=document.createElement('section');wrap.className='castix-sponsored';wrap.hidden=true;
     const label=document.createElement('small');label.textContent=tr('Sponsored','إعلان ممول');wrap.append(label);

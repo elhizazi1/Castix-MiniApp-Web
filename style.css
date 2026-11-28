@@ -73,4 +73,4 @@ body.castix-loading nav{backdrop-filter:none!important;-webkit-backdrop-filter:n
 /* Compact section action, using the existing theme palette. */
 .catalog-heading .catalog-all{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--line);border-radius:999px;padding:7px 12px;min-height:36px;color:var(--accent);background:transparent;white-space:nowrap}.catalog-heading .catalog-all::after{content:'';width:6px;height:6px;border-block-start:1.5px solid currentColor;border-inline-end:1.5px solid currentColor;transform:rotate(45deg)}html[dir=rtl] .catalog-heading .catalog-all::after{transform:rotate(-45deg)}
 
-.castix-sponsored{margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:18px;background:var(--panel);color:var(--text)}.castix-sponsored[hidden]{display:none}.castix-sponsored>small{display:block;margin-bottom:8px;color:var(--muted);font-size:11px}.castix-sponsored adsgram-task{display:block;--adsgram-task-font-size:14px;--adsgram-task-icon-size:44px;--adsgram-task-icon-title-gap:10px;--adsgram-task-icon-border-radius:12px;--adsgram-task-button-width:88px}
+

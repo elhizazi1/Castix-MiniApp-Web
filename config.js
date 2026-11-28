@@ -3,5 +3,5 @@ window.CASTIX_API = 'https://script.google.com/macros/s/AKfycbwVOkPPx6vUQCQxkzci
 
 window.CASTIX_CORE = 'https://castix-miniapp-core.vercel.app';
 
-// Enable only after AdsGram approval and integration testing.
+// Enable only after Monetag approval and integration testing.
 window.CASTIX_ADS_ENABLED = false;

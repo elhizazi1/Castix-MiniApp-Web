@@ -10,4 +10,4 @@ Privacy requests are handled manually through community moderators.
 
 ## Advertising
 
-Advertising is disabled in this release. The optional AdsGram Task integration is retained but does not load its SDK or request ads while CASTIX_ADS_ENABLED is false in config.js. Enable only after approval and integration testing. Google advertising is disabled.
+Advertising is disabled in this release. The optional Monetag (Telegram Mini Apps SDK) integration lives in ads.js; it does not load its SDK or request ads while CASTIX_ADS_ENABLED is false in config.js, and never runs on the public website. Enable only after approval and integration testing. Google advertising is disabled.

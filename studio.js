@@ -45,7 +45,7 @@ const L = {
   noClock: ['Add a clock layer, otherwise the theme shows no time.', 'أضف طبقة ساعة وإلا لن يعرض الثيم الوقت.'], tgHint: ['If the download does not start inside Telegram, use Share or Send for review.', 'إن لم يبدأ التنزيل داخل تيليجرام فاستخدم المشاركة أو الإرسال للمراجعة.'],
   building: ['Building…', 'جارٍ البناء…'], done: ['Done.', 'تم.'], failed: ['Export failed.', 'تعذّر التصدير.'], close: ['Close', 'إغلاق'], cat: ['Category', 'التصنيف'],
   tplTitle: ['Templates', 'القوالب'], tplHint: ['Applying a template replaces the layers (you can undo).', 'تطبيق القالب يستبدل الطبقات (يمكنك التراجع).'],
-  zone: ['Widgets sit here', 'منطقة الودجت'], saved: ['Saved', 'تم الحفظ'], codeV: ['Code', 'الكود']
+  zone: ['Widgets sit here', 'منطقة الودجت'], editMode: ['Edit', 'تعديل'], minimize: ['Minimize', 'تصغير'], editHint: ['Edit mode: drag to move, use the handles to scale and rotate. Tap Minimize to scroll again.', 'وضع التعديل: اسحب للتحريك وبالمقابض للتكبير والتدوير. اضغط تصغير للتمرير من جديد.'], saved: ['Saved', 'تم الحفظ'], codeV: ['Code', 'الكود']
 };
 let host = { lang: () => (localStorage.getItem('castix-lang') === 'ar' ? 'ar' : 'en'), tg: window.Telegram?.WebApp, api: null, during: fn => fn() };
 const lang = () => host.lang();
@@ -61,7 +61,7 @@ function h(tag, attrs, ...kids) {
 }
 const ICON = {
   undo: '<path d="M9 7 4 12l5 5M4 12h10a6 6 0 0 1 0 12"/>', redo: '<path d="m15 7 5 5-5 5M20 12H10a6 6 0 0 0 0 12"/>',
-  plus: '<path d="M12 5v14M5 12h14"/>', layers: '<path d="m3 8 9-5 9 5-9 5-9-5Zm0 5 9 5 9-5"/>', export: '<path d="M12 15V3m-5 5 5-5 5 5M4 16v4h16v-4"/>', tpl: '<rect x="4" y="4" width="7" height="9" rx="2"/><rect x="13" y="4" width="7" height="5" rx="2"/><rect x="13" y="11" width="7" height="9" rx="2"/><rect x="4" y="15" width="7" height="5" rx="2"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>', expand: '<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>', shrink: '<path d="M14 10l7-7M3 21l7-7M20 10h-6V4M4 14h6v6"/>', layers: '<path d="m3 8 9-5 9 5-9 5-9-5Zm0 5 9 5 9-5"/>', export: '<path d="M12 15V3m-5 5 5-5 5 5M4 16v4h16v-4"/>', tpl: '<rect x="4" y="4" width="7" height="9" rx="2"/><rect x="13" y="4" width="7" height="5" rx="2"/><rect x="13" y="11" width="7" height="9" rx="2"/><rect x="4" y="15" width="7" height="5" rx="2"/>',
   dup: '<rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>', trash: '<path d="M4 6h16M9 6V3h6v3M6 6l1 15h10l1-15"/>', up: '<path d="m6 15 6-6 6 6"/>', down: '<path d="m6 9 6 6 6-6"/>',
   eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>', eyeoff: '<path d="M3 3l18 18M10.6 5.1A9 9 0 0 1 12 5c6 0 10 7 10 7a17 17 0 0 1-3 3.7M6.6 6.6A17 17 0 0 0 2 12s4 7 10 7a9 9 0 0 0 4-1"/>',
   lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>', unlock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7-2"/>',
@@ -100,10 +100,14 @@ function syncUndo() { if (undoB) { undoB.disabled = hi <= 0; redoB.disabled = hi
 
 /* ------------------------------------------------------------------ stage */
 const VIEW_H = { top: 560, full: 844 };
+const coarse = () => matchMedia('(pointer:coarse)').matches;
+const touchLocked = e => e.pointerType === 'touch' && !st.edit; /* scroll mode: let the page scroll */
 function fitStage() {
   if (!stageEl) return;
   const w = stageEl.parentElement.clientWidth; if (!w) return;
-  st.u = w / 390; stageEl.style.height = VIEW_H[st.view] * st.u + 'px'; stageEl.style.width = w + 'px';
+  let u = w / 390;
+  if (st.edit && coarse()) u = Math.min(u, (innerHeight * .5) / VIEW_H[st.view]);
+  st.u = u; stageEl.style.height = VIEW_H[st.view] * u + 'px'; stageEl.style.width = 390 * u + 'px'; stageEl.style.marginInline = 'auto';
 }
 let rafStage = 0;
 function renderStage() { cancelAnimationFrame(rafStage); rafStage = requestAnimationFrame(renderStageNow); }
@@ -538,9 +542,10 @@ function build() {
   undoB = btn('', 'undo', undo, 'icon', T('undo')); redoB = btn('', 'redo', redo, 'icon', T('redo'));
   const bar = h('div', { class: 'cs-bar' }, h('div', { class: 'cs-tt' }, h('h2', null, T('title')), h('small', null, T('sub'))),
     h('div', { class: 'cs-bar-a' }, undoB, redoB, btn(T('templates'), 'tpl', openTemplates), btn('', 'gear', openTheme, 'icon', T('theme')), btn(T('export'), 'export', openExport, 'primary')));
+  edB = h('button', { type: 'button', class: 'cs-edbtn', onclick: () => setEdit(!st.edit) });
   stageEl = h('div', { class: 'cs-stage' }); const host2 = h('div', { class: 'cs-host' }); stageEl.append(host2); shadow = host2.attachShadow({ mode: 'open' });
   ov = h('div', { class: 'cs-ov' }, h('div', { class: 'cs-zone' }, h('span', null, T('zone'))), h('div', { class: 'cs-gv', hidden: true }));
-  selBox = h('div', { class: 'cs-sel', hidden: true, onpointerdown: e => { if (!e.target.dataset.h) beginDrag(e, 'move'); } }, h('i', { class: 'cs-hs', 'data-h': 'scale', onpointerdown: e => beginDrag(e, 'scale') }), h('i', { class: 'cs-hr', 'data-h': 'rot', onpointerdown: e => beginDrag(e, 'rot') }));
+  selBox = h('div', { class: 'cs-sel', hidden: true, onpointerdown: e => { if (touchLocked(e)) return; if (!e.target.dataset.h) beginDrag(e, 'move'); } }, h('i', { class: 'cs-hs', 'data-h': 'scale', onpointerdown: e => { if (!touchLocked(e)) beginDrag(e, 'scale'); } }), h('i', { class: 'cs-hr', 'data-h': 'rot', onpointerdown: e => { if (!touchLocked(e)) beginDrag(e, 'rot'); } }));
   ov.append(selBox); stageEl.append(ov);
   ov.addEventListener('click', e => { if (e.target.closest('.cs-sel')) return; const id = hit(e.clientX, e.clientY); select(id); });
   const tools = h('div', { class: 'cs-stool' },
@@ -549,8 +554,19 @@ function build() {
     h('button', { type: 'button', class: 'cs-b cs-pp', onclick: () => { st.paused = !st.paused; renderStage(); syncToolbar(); } }),
     h('button', { type: 'button', class: 'cs-b cs-gtog', onclick: () => { st.guide = !st.guide; drawOverlay(); syncToolbar(); } }, T('guide')));
   stripEl = h('div', { class: 'cs-strip' }); inspEl = h('article', { class: 'cs-insp' });
-  root.append(bar, h('div', { class: 'cs-grid' }, h('div', { class: 'cs-col-a' }, h('div', { class: 'cs-stagebox' }, stageEl), tools), h('div', { class: 'cs-col-b' }, stripEl, inspEl)), h('div', { class: 'cs-toast', hidden: true, role: 'status' }));
+  root.append(bar, h('div', { class: 'cs-grid' }, h('div', { class: 'cs-col-a' }, h('div', { class: 'cs-stagebox' }, stageEl, edB), tools), h('div', { class: 'cs-col-b' }, stripEl, inspEl)), h('div', { class: 'cs-toast', hidden: true, role: 'status' }));
   return root;
+}
+let edB;
+function syncEdit() {
+  if (!edB) return;
+  root.classList.toggle('cs-edit', !!st.edit);
+  edB.replaceChildren(ic(st.edit ? 'shrink' : 'expand'), h('span', null, T(st.edit ? 'minimize' : 'editMode')));
+  edB.classList.toggle('on', !!st.edit); edB.setAttribute('aria-pressed', String(!!st.edit));
+}
+function setEdit(on) {
+  st.edit = !!on; syncEdit(); fitStage(); renderStage();
+  if (on) { stageEl.parentElement.scrollIntoView({ block: 'start', behavior: 'smooth' }); say(T('editHint')); }
 }
 function mount(container, hostOpts) {
   host = Object.assign(host, hostOpts || {});
@@ -561,9 +577,9 @@ function mount(container, hostOpts) {
   container.replaceChildren(build());
   root.addEventListener('pointerdown', e => { const b = e.target.closest && e.target.closest('button'); if (b && !b.disabled) host.tg?.HapticFeedback?.selectionChanged?.(); });
   new ResizeObserver(() => { fitStage(); renderStage(); }).observe(stageEl.parentElement);
-  hist = [snap()]; hi = 0; renderAll(); syncUndo();
+  hist = [snap()]; hi = 0; renderAll(); syncUndo(); syncEdit();
   if (!window.__csKeys) { window.__csKeys = 1; document.addEventListener('keydown', e => { if (!st || !root || !root.isConnected) return; const tag = (e.target.tagName || '').toLowerCase(); if (['input', 'textarea', 'select'].includes(tag)) return; if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); } else if (e.key === 'Delete' && cur() && cur().type !== 'clock') { st.p.layers = st.p.layers.filter(x => x.id !== st.sel); st.sel = null; renderAll(); commit(true); } }); }
 }
-function relocalize() { if (!st || !root || !root.isConnected) return; const sel0 = st.sel; mount(root.parentElement, host); st.sel = sel0; renderAll(); }
+function relocalize() { if (!st || !root || !root.isConnected) return; const sel0 = st.sel, ed0 = st.edit; mount(root.parentElement, host); st.sel = sel0; st.edit = ed0; syncEdit(); fitStage(); renderAll(); }
 window.CastixStudio = { mount, relocalize, _state: () => st, _TEMPLATES: TEMPLATES };
 })();

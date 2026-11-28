@@ -198,3 +198,34 @@ body[data-mode=studio] .community-links{display:none}
 .cs-gtog::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--line);transition:background .15s}
 .cs-gtog[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 18%,var(--panel))!important;border-color:var(--accent)!important}
 .cs-gtog[aria-pressed=true]::before{background:var(--accent);box-shadow:0 0 8px var(--accent)}
+
+/* ===== touch: scroll mode by default, Edit mode for gestures ===== */
+.cs-stage,.cs-sel{touch-action:pan-y}
+.cs-hs,.cs-hr{touch-action:pan-y;display:none}
+.cs.cs-edit :is(.cs-stage,.cs-sel,.cs-hs,.cs-hr){touch-action:none}
+.cs.cs-edit .cs-hs,.cs.cs-edit .cs-hr{display:block}
+@media(hover:hover) and (pointer:fine){.cs-stage,.cs-sel{touch-action:none}.cs-hs,.cs-hr{display:block;touch-action:none}.cs-edbtn{display:none!important}}
+.cs-stagebox{position:relative}
+.cs-edbtn{position:absolute;z-index:4;inset-block-start:10px;inset-inline-end:10px;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:12px;border:1px solid #ffffff30;background:#000000a8;color:#fff;font:600 13px/1 inherit;font-family:inherit;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.cs-edbtn .cs-ic{color:var(--accent);width:18px;height:18px}
+.cs-edbtn.on{background:var(--accent);border-color:transparent;color:var(--onaccent)}
+.cs-edbtn.on .cs-ic{color:inherit}
+.cs-edbtn:active{transform:scale(.96)}
+.cs-edit .cs-stagebox{box-shadow:0 0 0 2px var(--accent),0 12px 40px #000a}
+@media(max-width:899px){
+ .cs.cs-edit .cs-col-a{display:contents}
+ .cs.cs-edit .cs-stagebox{position:sticky;top:8px;z-index:8;width:100%;max-width:none}
+}
+/* compact Edit / Minimize pill — small to stay out of the artwork, 44px hit area kept */
+.cs-edbtn{min-height:30px;height:30px;padding:0 10px 0 8px;gap:5px;border-radius:999px;font-size:11.5px;font-weight:600;letter-spacing:.02em;inset-block-start:8px;inset-inline-end:8px;background:#000000a0;border-color:#ffffff26;opacity:.92}
+.cs-edbtn span:not(.cs-ic){font-size:11.5px!important;line-height:1}
+.cs-edbtn .cs-ic{width:14px;height:14px}
+.cs-edbtn .cs-ic svg{width:14px;height:14px;stroke-width:2.1}
+.cs-edbtn::after{content:'';position:absolute;inset:-7px -6px}
+.cs-edbtn:hover,.cs-edbtn:focus-visible{opacity:1}
+.cs-edbtn.on{opacity:1;box-shadow:0 2px 10px color-mix(in srgb,var(--accent) 45%,transparent)}
+.cs-edbtn{padding:0 13px 0 10px!important;gap:6px}
+/* Edit/Minimize: bigger pill, clearly smaller label */
+.cs-edbtn{height:38px!important;min-height:38px!important;padding:0 16px 0 13px!important;gap:7px!important;font-size:10.5px!important;inset-block-start:10px;inset-inline-end:10px;white-space:nowrap;line-height:1}
+.cs-edbtn span:not(.cs-ic){font-size:10.5px!important;line-height:1;letter-spacing:.03em;white-space:nowrap}
+.cs-edbtn .cs-ic,.cs-edbtn .cs-ic svg{width:15px!important;height:15px!important}

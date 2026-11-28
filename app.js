@@ -14,6 +14,7 @@ async function run(fn,button){if(busy)return;busy=true;try{await window.CastixLo
 function locale(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.querySelectorAll('[data-t]').forEach(e=>{e.dataset.en ||= e.textContent;e.textContent=t(e.dataset.t,e.dataset.en);});$('lang').textContent=lang==='ar'?'English':'العربية';}
 function save(j){const bytes=Uint8Array.from(atob(j.file),c=>c.charCodeAt(0));const url=URL.createObjectURL(new Blob([bytes],{type:'application/octet-stream'}));const a=node('a');a.href=url;a.download=j.filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 async function deliver(action,id){
+ if(action==='deliver')await window.CastixAds?.beforeDownload(id);
  if(action==='deliver'&&typeof tg?.downloadFile==='function'&&tg.isVersionAtLeast?.('8.0')){
   let ticket;try{ticket=await api('downloadTicket',{id});}catch(e){if(!confirm(lang==='ar'?'تعذر تجهيز التحميل المباشر. إرسال الملف إلى البوت؟':'Direct download unavailable. Send to bot instead?'))return;}
   if(ticket){const url=new URL('/api/download',window.CASTIX_CORE);url.searchParams.set('ticket',ticket.ticket);try{await new Promise((resolve,reject)=>{tg.downloadFile({url:url.href,file_name:ticket.filename},accepted=>resolve(accepted));});return;}catch(e){if(!confirm(lang==='ar'?'تعذر فتح التحميل. إرسال الملف إلى البوت؟':'Could not open download. Send to bot instead?'))return;}}

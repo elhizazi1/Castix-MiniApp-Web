@@ -29,6 +29,15 @@ window.CastixAds = (() => {
     if (!(await load())) return;
     try { window[FN]({ type: 'inApp', inAppSettings: { frequency: 2, capping: 0.5, interval: 120, timeout: 60, everyPage: false } }); } catch (e) {}
   }
+  /* Called right before a theme download. Never blocks the download: at most one ad per 3 minutes,
+     gives up after 12 s, and any failure simply lets the download continue. */
+  async function beforeDownload(id) {
+    if (!enabled()) return;
+    let last = 0; try { last = +localStorage.getItem('castix-ad-ts') || 0; } catch (e) {}
+    if (Date.now() - last < 180000) return;
+    try { localStorage.setItem('castix-ad-ts', String(Date.now())); } catch (e) {}
+    await Promise.race([reward(id).catch(() => true), new Promise(r => setTimeout(r, 12000))]);
+  }
   const mount = () => {}; /* kept so older callers don't break */
-  return { reward, start, mount, enabled };
+  return { reward, beforeDownload, start, mount, enabled };
 })();

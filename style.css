@@ -74,3 +74,5 @@ body.castix-loading nav{backdrop-filter:none!important;-webkit-backdrop-filter:n
 .catalog-heading .catalog-all{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--line);border-radius:999px;padding:7px 12px;min-height:36px;color:var(--accent);background:transparent;white-space:nowrap}.catalog-heading .catalog-all::after{content:'';width:6px;height:6px;border-block-start:1.5px solid currentColor;border-inline-end:1.5px solid currentColor;transform:rotate(45deg)}html[dir=rtl] .catalog-heading .catalog-all::after{transform:rotate(-45deg)}
 
 
+
+.castix-sponsored{margin:14px 0;padding:16px;border:1px solid var(--line);border-radius:19px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 14%,var(--panel)),var(--panel));display:grid;gap:6px;justify-items:start}.castix-sponsored[hidden]{display:none}.castix-sponsored small{font-size:11px;color:var(--muted);letter-spacing:.06em}.castix-sponsored strong{font-size:16px}.castix-sponsored p{margin:0;color:var(--muted);font-size:13px}.castix-sponsored button{margin-top:6px}

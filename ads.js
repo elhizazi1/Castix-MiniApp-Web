@@ -38,6 +38,25 @@ window.CastixAds = (() => {
     try { localStorage.setItem('castix-ad-ts', String(Date.now())); } catch (e) {}
     await Promise.race([reward(id).catch(() => true), new Promise(r => setTimeout(r, 12000))]);
   }
-  const mount = () => {}; /* kept so older callers don't break */
+  /* Sponsored card shown inside the catalog (Telegram only). Looks like a theme card, clearly labelled.
+     Tapping it shows a rewarded interstitial the user chose to watch. Hidden if ads are unavailable. */
+  function mount(root, tr) {
+    if (!enabled() || root.querySelector('.castix-sponsored')) return;
+    const sections = root.querySelectorAll('.catalog-section'); if (sections.length < 2) return;
+    const el = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x) n.textContent = x; return n; };
+    const card = el('section', 'castix-sponsored'); card.hidden = true;
+    const tag = el('small', '', tr('Sponsored', 'إعلان ممول'));
+    const title = el('strong', '', tr('Support Castix', 'ادعم Castix'));
+    const text = el('p', '', tr('Watch a short ad to keep themes free for everyone.', 'شاهد إعلاناً قصيراً لتبقى التصاميم مجانية للجميع.'));
+    const b = el('button', 'primary', tr('Watch ad', 'شاهد الإعلان')); b.type = 'button';
+    b.onclick = async () => {
+      b.disabled = true;
+      const ok = await reward('card');
+      b.textContent = ok ? tr('Thank you ❤', 'شكراً لك ❤') : tr('Watch ad', 'شاهد الإعلان'); b.disabled = ok;
+    };
+    card.append(tag, title, text, b);
+    sections[Math.min(1, sections.length - 2)].after(card);
+    load().then(ok => { if (ok && card.isConnected) card.hidden = false; else card.remove(); });
+  }
   return { reward, beforeDownload, start, mount, enabled };
 })();

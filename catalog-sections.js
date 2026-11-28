@@ -33,6 +33,7 @@ window.CastixCatalog = (() => {
     sorted.forEach(randomRank);
     const discovery=[...sorted].sort((a,b)=>Number(used.has(a.id))-Number(used.has(b.id))||randomRank(a)-randomRank(b));
     section(tr('Discover more','اكتشف المزيد'),discovery,false,false,true);
+    window.CastixAds?.mount(root,tr);
   }
   return {render,key,latest,popular};
 })();
